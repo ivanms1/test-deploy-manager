@@ -1,0 +1,124 @@
+.Sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: calc(100vh - 33px);
+  z-index: 1000;
+
+  &.isClosed {
+    background-color: var(--primary-color);
+  }
+
+  &.isOpen {
+    background-color: var(--primary-color-font);
+  }
+}
+
+.QrButtonWrapper {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  padding: 1rem;
+  width: 65px;
+  height: 65px;
+}
+
+.QrCodePlaceholder {
+  position: absolute;
+  bottom: 0;
+  fill: var(--primary-color);
+
+  & > circle {
+    fill: var(--bg);
+  }
+}
+
+.QrCodePlaceholderOpen {
+  position: absolute;
+  bottom: 0;
+  fill: var(--bg);
+
+  & > circle {
+    fill: var(--primary-color);
+  }
+}
+
+.QrButton {
+  border: none;
+  overflow: hidden;
+  background-color: transparent;
+  position: absolute;
+  right: 29px;
+  top: 2px;
+  cursor: pointer;
+
+  & .QrCode {
+    height: 25px;
+    width: 25px;
+    fill: var(--primary-color);
+  }
+
+  & .QrCodeOpen {
+    height: 25px;
+    width: 25px;
+    fill: var(--bg);
+  }
+}
+
+.QrCodePage {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  width: 414px;
+  background-color: var(--primary-color);
+  height: calc(100vh - 32px - 129px);
+  z-index: 9000;
+  padding-top: 128px;
+
+  & * {
+    color: #ffff;
+  }
+
+  & .Title {
+    text-transform: uppercase;
+
+    font-size: 15px;
+    margin-bottom: 52px;
+  }
+
+  & .QrCodeBox {
+    background: #ffffff;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+    margin-bottom: 15px;
+
+    & .QrCode {
+      height: 189px;
+      width: 189px;
+      border-radius: 15px;
+    }
+  }
+
+  & .Instructions {
+    font-size: 10px;
+    margin-bottom: 63px;
+  }
+
+  & .AddressContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+
+    & .Label {
+      margin-bottom: 5px;
+    }
+  }
+
+  & .ExportButton {
+    max-width: 250px;
+  }
+}

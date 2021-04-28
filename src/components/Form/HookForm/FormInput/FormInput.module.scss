@@ -1,0 +1,11 @@
+.hasError {
+  border: solid 1px var(--ui-red);
+}
+
+.Error {
+  position: absolute;
+  color: var(--ui-red);
+  font-size: 11px;
+  bottom: -15px;
+  right: 0;
+}

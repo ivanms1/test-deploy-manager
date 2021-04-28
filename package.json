@@ -17,7 +17,8 @@
   },
   "keywords": [],
   "author": {
-    "name": "Conun"
+    "name": "Conun",
+    "email": "ivan@conun.co.kr"
   },
   "license": "MIT",
   "build": {
@@ -28,6 +29,13 @@
     "directories": {
       "output": "./out"
     },
+    "extraResources": [
+      {
+        "from": "./assets",
+        "to": "assets"
+      }
+    ],
+    "asar": false,
     "appId": "conun.app",
     "mac": {
       "category": "public.app-category.productivity"

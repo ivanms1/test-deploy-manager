@@ -1,5 +1,7 @@
 import fetch from "electron-fetch";
 
+import db from "../store/db";
+
 import { API_URI, FcnTypes, ORG_NAME } from "../const";
 
 const DEFAULT_PRICE = "0";
@@ -36,12 +38,14 @@ export async function likeContent({
   userId: number;
   contentId: number;
 }) {
+  const userDetails: any = await db.get("userDetails");
+
   const body = {
     fcn: FcnTypes.LikeContent,
     orgName: ORG_NAME,
     action: {
       ccid: publicHash,
-      wallet: "0xe4FD245bf3A78D414cFceec73d01b53959635935",
+      wallet: userDetails?.walletAddress,
       user_id: String(userId),
       content_id: String(contentId),
     },
@@ -65,12 +69,14 @@ export async function countDownload({
   userId: number;
   contentId: number;
 }) {
+  const userDetails: any = await db.get("userDetails");
+
   const body = {
     fcn: FcnTypes.CountDownloads,
     orgName: ORG_NAME,
     action: {
       ccid: publicHash,
-      wallet: "0xe4FD245bf3A78D414cFceec73d01b53959635935",
+      wallet: userDetails?.walletAddress,
       user_id: String(userId),
       content_id: String(contentId),
     },

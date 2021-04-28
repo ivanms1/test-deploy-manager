@@ -12,15 +12,9 @@ export let drive: ChildProcess | null;
 // @ts-expect-error
 ipcMain.handle("open-drive", async () => {
   try {
-    drive = spawn(
-      `${path.resolve(
-        __dirname,
-        "../../"
-      )}/exe-files/Conun Drive-1.0.0.AppImage`,
-      {
-        stdio: ["pipe", "pipe", "pipe", "ipc"],
-      }
-    );
+    drive = spawn(`${path.resolve(__dirname, "../../../")}/assets/drive.exe`, {
+      stdio: ["pipe", "pipe", "pipe", "ipc"],
+    });
 
     mainWindow.webContents.send("is-drive-open", true);
 

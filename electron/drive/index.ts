@@ -71,6 +71,7 @@ export async function countDownload({
   contentId: number;
 }) {
   const userDetails: any = await db.get("userDetails");
+
   const body = {
     fcn: FcnTypes.CountDownloads,
     orgName: ORG_NAME,

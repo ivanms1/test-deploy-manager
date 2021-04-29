@@ -43,7 +43,6 @@ jobs:
       - name: Install deps and package
         run: |
           yarn install
-          ls
           yarn make
       - name: Upload Executable
         uses: actions/upload-artifact@v2

@@ -10,7 +10,6 @@ const DEFAULT_STATUS = "public";
 
 export async function createFile(ipfshash: string) {
   const userDetails: any = await db.get("userDetails");
-
   const body = {
     fcn: FcnTypes.CreateFile,
     orgName: ORG_NAME,
@@ -72,7 +71,6 @@ export async function countDownload({
   contentId: number;
 }) {
   const userDetails: any = await db.get("userDetails");
-
   const body = {
     fcn: FcnTypes.CountDownloads,
     orgName: ORG_NAME,

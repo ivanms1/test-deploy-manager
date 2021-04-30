@@ -2,7 +2,7 @@ import useGetConBalance from "../hooks/useGetConBalance";
 import useGetConTokenBalance from "../hooks/useGetConTokenBalance";
 import useGetEthBalance from "../hooks/useGetEthBalance";
 
-export const serverUrl = "http://192.168.100.54:4000/api/v1/";
+export const serverUrl = "https://blockchainmiddleware.conun.io/api/v1/";
 
 export const AUTH_TOKEN = "conun-auth-token";
 

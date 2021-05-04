@@ -1,5 +1,7 @@
 export const PROD_SERVER = "https://blockchainmiddleware.conun.io/api/v1";
-export const DEV_SERVER = "http://192.168.100.54:4000/api/v1/";
+export const DEV_SERVER = "http://192.168.100.54:4000/api/v1";
+export const LOG_SERVER_DEV = "http://192.168.100.54:9600/api/v1/log";
+export const LOG_SERVER_PROD = "http://192.168.100.54:9600/api/v1/log";
 
 export const ORG_NAME = "Org1";
 

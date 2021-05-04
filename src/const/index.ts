@@ -27,6 +27,10 @@ export const WALLET_TYPE = "ETH";
 
 export const IDENTITY = "identity";
 
+export const SMART_CONTRACT_DEV = "conos";
+
+export const SMART_CONTRACT_PROD = "CONX";
+
 export const FcnTypes = {
   Transfer: "Transfer",
   Init: "Init",

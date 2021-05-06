@@ -169,6 +169,7 @@ ipcMain.handle("open-transfer-window", async (_, args) => {
       transferWindow = new BrowserWindow({
         width: 380,
         height: 371,
+        frame: false,
         webPreferences: {
           nodeIntegration: false,
           preload: path.resolve(__dirname, "preload.js"),

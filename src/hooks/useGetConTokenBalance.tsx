@@ -14,10 +14,7 @@ import {
 function useGetConTokenBalance() {
   const { currentUser } = useAppCurrentUser();
 
-  const SMART_CONTRACT =
-    process.env.NODE_ENV === "development"
-      ? SMART_CONTRACT_DEV
-      : SMART_CONTRACT_PROD;
+  const SMART_CONTRACT = SMART_CONTRACT_DEV;
 
   const { data, isLoading, refetch, isFetching } = useQuery(
     "balance",

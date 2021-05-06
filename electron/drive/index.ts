@@ -9,7 +9,7 @@ const DEFAULT_PRICE = "0";
 
 const DEFAULT_STATUS = "public";
 
-const SERVER_URL = isDev ? DEV_SERVER : PROD_SERVER;
+const SERVER_URL = DEV_SERVER;
 
 export async function createFile(ipfshash: string) {
   const userDetails: any = await db.get("userDetails");

@@ -2,7 +2,7 @@ import { useMutation } from "react-query";
 
 import useAppCurrentUser from "./useAppCurrentUser";
 import useSignature from "./useSignature";
-import usePass from "./usePass";
+import useDbUser from "./useDbUser";
 
 import instance from "../axios/instance";
 
@@ -61,19 +61,16 @@ async function transferHelper(token, values, fromAddress, pass) {
 function useTransfer({ token }: UseTransferProps) {
   const { currentUser } = useAppCurrentUser();
   const { getSignature } = useSignature();
-  const { pass } = usePass();
+  const { user } = useDbUser();
 
   const {
     mutateAsync: transfer,
     isLoading,
   } = useMutation((transferData: Values) =>
-    transferHelper(token, transferData, currentUser?.walletAddress, pass)
+    transferHelper(token, transferData, currentUser?.walletAddress, user?.pass)
   );
 
-  const SMART_CONTRACT =
-    process.env.NODE_ENV === "development"
-      ? SMART_CONTRACT_DEV
-      : SMART_CONTRACT_PROD;
+  const SMART_CONTRACT = SMART_CONTRACT_DEV;
 
   const {
     mutateAsync: transferLocal,

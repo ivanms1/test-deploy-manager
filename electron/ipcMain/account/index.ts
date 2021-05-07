@@ -71,4 +71,6 @@ ipcMain.handle("save-pass", async (_, args) => {
   return db.put(userDetails);
 });
 
-ipcMain.handle("get-current-user", async () => db.get("userDetails"));
+ipcMain.handle("get-current-user", async () => {
+  return db.get("userDetails");
+});

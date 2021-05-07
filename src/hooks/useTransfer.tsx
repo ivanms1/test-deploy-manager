@@ -70,7 +70,10 @@ function useTransfer({ token }: UseTransferProps) {
     transferHelper(token, transferData, currentUser?.walletAddress, user?.pass)
   );
 
-  const SMART_CONTRACT = SMART_CONTRACT_DEV;
+  const SMART_CONTRACT =
+    process.env.NODE_ENV === "development"
+      ? SMART_CONTRACT_DEV
+      : SMART_CONTRACT_PROD;
 
   const {
     mutateAsync: transferLocal,

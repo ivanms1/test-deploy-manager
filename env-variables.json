@@ -3,6 +3,11 @@
   "clientId": "jbWYQgUDnuLTzzrWmt2aKtrNXJ0C3Gcg",
   "web3Url": "https://ropsten.infura.io/v3/2b1758a74cf249a598f13e357bb058dc",
   "contractAddress": "0x6b2e8703f7072461619ea15b5fd0bc85bdbf82af",
+  "release": {
+    "repo": "conun-main-dapplication",
+    "owner": "CONUN-Global",
+    "token": "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"
+  },
   "abi": [
     {
       "constant": false,

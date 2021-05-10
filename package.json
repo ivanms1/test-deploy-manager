@@ -21,10 +21,10 @@
     "wallet"
   ],
   "author": {
-    "name": "Conun",
+    "name": "Ivan",
     "email": "ivan@conun.co.kr"
   },
-  "repository": "https://github.com/CONUN-Global/conun-main-dapplication",
+  "repository": "https://github.com/ivanms1/test-deploy-manager",
   "license": "MIT",
   "copyright": "Copyright 2020 by CONUN GROUP",
   "build": {

@@ -5,8 +5,7 @@
   "contractAddress": "0x6b2e8703f7072461619ea15b5fd0bc85bdbf82af",
   "release": {
     "repo": "conun-main-dapplication",
-    "owner": "CONUN-Global",
-    "token": "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"
+    "owner": "CONUN-Global"
   },
   "abi": [
     {

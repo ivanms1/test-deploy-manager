@@ -43,7 +43,7 @@ jobs:
       - name: Install deps and package
         run: |
           yarn install
-          yarn release
+          yarn make
       - name: Upload Executable
         uses: actions/upload-artifact@v2
         with:
@@ -65,7 +65,7 @@ jobs:
           node-version: 15.x
       - run: |
           yarn install
-          yarn release
+          yarn make
       - name: Upload Executable
         uses: actions/upload-artifact@v2
         with:

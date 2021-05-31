@@ -1,4 +1,4 @@
-import { ipcMain, shell } from "electron";
+import { app, ipcMain, shell } from "electron";
 import { server as webSocketServer } from "websocket";
 import http from "http";
 
@@ -10,6 +10,8 @@ import logger from "../../logger";
 
 export const clients: any = {};
 
+let wsServer: webSocketServer | null;
+
 const PORT = 17401;
 
 export function startWebSocket() {
@@ -17,7 +19,7 @@ export function startWebSocket() {
 
   server.listen(PORT);
 
-  const wsServer = new webSocketServer({
+  wsServer = new webSocketServer({
     httpServer: server,
   });
 
@@ -39,6 +41,7 @@ export function startWebSocket() {
       JSON.stringify({
         type: "send-user-details",
         walletAddress: userDetails?.walletAddress,
+        managerVersion: app.getVersion(),
       })
     );
 
@@ -97,7 +100,7 @@ export function startWebSocket() {
               data: String(error),
             })
           );
-          logger("create-file", error, "error");
+          logger("create-file", error.message, "error");
         }
       }
 
@@ -202,7 +205,9 @@ export function startWebSocket() {
 }
 
 ipcMain.handle("start-websocket", () => {
-  startWebSocket();
+  if (!wsServer) {
+    startWebSocket();
+  }
 });
 
 ipcMain.handle("open-drive", async () => {

@@ -5,6 +5,7 @@ import keytar from "keytar";
 import os from "os";
 
 import { resetDb } from "../store/db";
+import logger from "../logger";
 
 import envVariables from "../../env-variables.json";
 
@@ -74,6 +75,7 @@ async function refreshTokens() {
       accessToken = response.data.access_token;
       profile = jwtDecode(response.data.id_token);
     } catch (error) {
+      logger("refresh-token", error?.message, "error");
       await logout();
 
       throw error;
@@ -114,7 +116,7 @@ async function loadTokens(callbackURL: string) {
     }
   } catch (error) {
     await logout();
-
+    logger("load-token-error", error?.message, "error");
     throw error;
   }
 }

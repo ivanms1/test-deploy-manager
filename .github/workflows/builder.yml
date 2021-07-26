@@ -6,27 +6,27 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  # linux:
-  #   runs-on: ubuntu-latest
+  linux:
+    runs-on: ubuntu-latest
 
-  #   strategy:
-  #     matrix:
-  #       node-version: [15.x]
+    strategy:
+      matrix:
+        node-version: [15.x]
 
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Setup node
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 15.x
-  #     - run: |
-  #         yarn install
-  #         yarn make
-  #     - name: Upload Executable
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: linux-exec
-  #         path: out/
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 15.x
+      - run: |
+          yarn install
+          yarn make
+      - name: Upload Executable
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-exec
+          path: out/
   win:
     runs-on: windows-latest
 

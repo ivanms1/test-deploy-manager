@@ -19,7 +19,13 @@ interface FormData {
 
 function PasswordSettingsModal({ isOpen, onClose }) {
   const { user, refetch } = useDbUser();
-  const { register, errors, handleSubmit, control, reset } = useForm<FormData>({
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    control,
+    reset,
+  } = useForm<FormData>({
     defaultValues: {
       password: "",
       askForPassword: user?.askForPassword,
@@ -41,7 +47,6 @@ function PasswordSettingsModal({ isOpen, onClose }) {
     refetch();
 
     toast.success("Changes saved", {
-      position: "bottom-center",
       autoClose: 1000,
     });
 
@@ -59,9 +64,9 @@ function PasswordSettingsModal({ isOpen, onClose }) {
         <Controller
           name="askForPassword"
           control={control}
-          render={({ onChange, value }) => (
+          render={({ field: { onChange, value } }) => (
             <Checkbox
-              id="password-check "
+              id="password-check"
               label="Ask for password before every transaction"
               className={styles.Checkbox}
               checked={value}
@@ -71,8 +76,7 @@ function PasswordSettingsModal({ isOpen, onClose }) {
         />
         <FormInput
           type="password"
-          name="password"
-          formRef={register({
+          register={register("password", {
             required: {
               value: true,
               message: "You need to input your password to change this setting",

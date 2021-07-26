@@ -2,6 +2,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from "react-query";
 import { useHistory } from "react-router";
+import { toast } from "react-toastify";
 
 import Button from "../../../components/Button";
 import FormInput from "../../../components/Form/HookForm/FormInput";
@@ -34,7 +35,12 @@ interface FormData {
 
 function CreateWallet({ setCurrentStep }: StepProps) {
   const { onLogin } = useAppContext();
-  const { register, getValues, errors, handleSubmit } = useForm<FormData>();
+  const {
+    register,
+    getValues,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<FormData>();
 
   const { mutateAsync: create, isLoading } = useMutation((password: string) =>
     createWallet(password)
@@ -45,14 +51,23 @@ function CreateWallet({ setCurrentStep }: StepProps) {
   const history = useHistory();
 
   const onSubmit: SubmitHandler<FormData> = async ({ password }) => {
-    const res = await create(password);
+    try {
+      const res = await create(password);
 
-    if (res?.success) {
-      setIndentity(res?.payload?.x509Identity);
+      if (res?.success) {
+        setIndentity(res?.payload?.x509Identity);
 
-      const data = await login({ password, email: res?.payload?.user?.email });
-      onLogin(data?.payload?.["x-auth-token"]);
-      history.replace("/success");
+        const data = await login({
+          password,
+          email: res?.payload?.user?.email,
+        });
+        onLogin(data?.payload?.["x-auth-token"]);
+        history.replace("/success");
+      } else {
+        toast.error(res?.payload ?? "An error ocurred");
+      }
+    } catch (error) {
+      toast.error("An error ocurred");
     }
   };
 
@@ -73,8 +88,7 @@ function CreateWallet({ setCurrentStep }: StepProps) {
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormInput
-          name="password"
-          formRef={register({
+          register={register("password", {
             required: { value: true, message: "Password is required" },
             minLength: {
               value: 5,
@@ -87,8 +101,7 @@ function CreateWallet({ setCurrentStep }: StepProps) {
           label="Create a Password"
         />
         <FormInput
-          name="confirmPassword"
-          formRef={register({
+          register={register("confirmPassword", {
             required: { value: true, message: "Confirm your password" },
             validate: {
               passwordMatch: (value) =>

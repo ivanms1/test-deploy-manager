@@ -2,7 +2,7 @@ import React from "react";
 
 import Button from "../../../components/Button";
 
-import useCurrentUser from "../../../hooks/useCurrentUser";
+import useDbUser from "../../../hooks/useDbUser";
 
 import Arrow from "../../../assets/icons/arrow.svg";
 
@@ -13,23 +13,23 @@ import styles from "./Welcome.module.scss";
 const { api } = window;
 
 function Welcome({ setCurrentStep }: StepProps) {
-  const { currentUser } = useCurrentUser();
+  const { user } = useDbUser();
 
   return (
     <>
       <div className={styles.UserBox}>
         <img
-          src={currentUser?.picture}
+          src={user?.picture}
           className={styles.ProfilePicture}
           alt="profile-picture"
         />
         <div className={styles.InfoBox}>
-          <span className={styles.Name}>{currentUser?.name}</span>
-          <span className={styles.Email}>{currentUser?.email}</span>
+          <span className={styles.Name}>{user?.name}</span>
+          <span className={styles.Email}>{user?.email}</span>
         </div>
       </div>
       <div>
-        <div className={styles.Title}>Hello, {currentUser?.givenName}!</div>
+        <div className={styles.Title}>Hello, {user?.givenName}!</div>
       </div>
       <div className={styles.Subtitle}>
         You will be guided through our CONUN wallet creation screens with an

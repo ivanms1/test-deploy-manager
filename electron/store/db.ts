@@ -39,30 +39,34 @@ export async function prepareDb() {
 }
 
 export async function resetDb() {
+  const transactions = await db.get("transactions");
   const newTransactions: any = {
     _id: "transactions",
+    _rev: transactions._rev,
     list: [],
   };
 
   await db.put(newTransactions);
 
-  await db.get("userDetails");
+  const userDetails = await db.get("userDetails");
 
-  const userDetails: any = {
+  const newUserDetails: any = {
     _id: "userDetails",
+    _rev: userDetails._rev,
     pass: "",
     askForPassword: true,
   };
-  await db.put(userDetails);
+  await db.put(newUserDetails);
 
-  await db.get("appData");
+  const appData = await db.get("appData");
 
-  const appData: any = {
+  const newAppData: any = {
     _id: "appData",
+    _rev: appData._rev,
     drivePath: "",
   };
 
-  await db.put(appData);
+  await db.put(newAppData);
 }
 
 export default db;

@@ -1,6 +1,7 @@
 {
-  "auth0Domain": "dev-0f62tzx7.au.auth0.com",
-  "clientId": "jbWYQgUDnuLTzzrWmt2aKtrNXJ0C3Gcg",
+  "kakaoApiKey":"55950ee36ea9085adacc7d027e088688",
+  "clientSecret": "99uij72nbtUwlcEriNSI319i",
+  "clientId": "772793738493-i40b81d17tokamvluuuetbpa9fs1cc8f.apps.googleusercontent.com",
   "web3Url": "https://ropsten.infura.io/v3/2b1758a74cf249a598f13e357bb058dc",
   "release": {
     "repo": "conun-main-dapplication",

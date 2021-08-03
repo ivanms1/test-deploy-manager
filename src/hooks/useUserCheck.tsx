@@ -1,7 +1,8 @@
 import { useQuery } from "react-query";
 
+import useDbUser from "./useDbUser";
+
 import instance from "../axios/instance";
-import useCurrentUser from "./useCurrentUser";
 
 const checkUser = async (email: string) => {
   const { data } = await instance.get(`/users/check/?email=${email}`);
@@ -10,13 +11,13 @@ const checkUser = async (email: string) => {
 };
 
 function useUserCheck() {
-  const { currentUser, isLoading: currentUserLoading } = useCurrentUser();
+  const { user, isLoading: currentUserLoading } = useDbUser();
 
   const { data, isLoading } = useQuery(
     "check-user",
-    () => checkUser(currentUser?.email),
+    () => checkUser(user?.email),
     {
-      enabled: !currentUserLoading && !!currentUser?.email,
+      enabled: !currentUserLoading && !!user?.email,
     }
   );
 

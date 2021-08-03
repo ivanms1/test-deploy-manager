@@ -38,32 +38,31 @@ async function logger(name: string, message: any, type: "info" | "error") {
     localLogger.info(formattedMessage);
   } else {
     localLogger.error(formattedMessage);
-  }
+    try {
+      const userDetails: { walletAddress: string } = await db.get(
+        "userDetailsDrive"
+      );
 
-  try {
-    const userDetails: { walletAddress: string } = await db.get(
-      "userDetailsDrive"
-    );
+      const body = {
+        product_name: "Conun Drive",
+        company_name: "CONUN Global",
+        version: app.getVersion(),
+        platform: process.platform,
+        process_type: process.type,
+        wallet_address: userDetails?.walletAddress,
+        app_location: app.getPath("exe"),
+        error_name: name,
+        error_message: formattedMessage,
+      };
 
-    const body = {
-      product_name: "Conun Drive",
-      company_name: "CONUN Global",
-      version: app.getVersion(),
-      platform: process.platform,
-      process_type: process.type,
-      wallet_address: userDetails?.walletAddress,
-      app_location: app.getPath("exe"),
-      error_name: name,
-      error_message: formattedMessage,
-    };
-
-    await fetch(LOG_URL, {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    // no one can save us now
+      await fetch(LOG_URL, {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      // no one can save us now
+    }
   }
 }
 

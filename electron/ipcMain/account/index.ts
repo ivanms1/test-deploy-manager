@@ -44,5 +44,7 @@ ipcMain.handle("save-pass", async (_, args) => {
 });
 
 ipcMain.handle("get-current-user", async () => {
-  return db.get("userDetails");
+  const user = await db.get("userDetails");
+
+  return user;
 });

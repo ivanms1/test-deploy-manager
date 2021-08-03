@@ -7,12 +7,17 @@ import ImportWallet from "./ImportWallet";
 import CreateWallet from "./CreateWallet";
 import Layout from "../../components/Layout";
 import ExistingWallet from "./ExistingWallet";
+import SocialLogin from "./SocialLogin";
 
 import { useAppContext } from "../../components/AppContext";
 
 import styles from "./IntroSteps.module.scss";
 
 const steps = {
+  socialLogin: {
+    id: "socialLogin",
+    component: SocialLogin,
+  },
   welcome: {
     id: "welcome",
     breadCrumb: "",
@@ -45,9 +50,13 @@ export interface StepProps {
 }
 
 function IntroSteps() {
-  const { isAlreadyUser } = useAppContext();
+  const { isAlreadyUser, isLoggedIn } = useAppContext();
   const [currentStep, setCurrentStep] = useState(
-    isAlreadyUser ? steps.existingWallet.id : steps.welcome.id
+    isLoggedIn
+      ? isAlreadyUser
+        ? steps.existingWallet.id
+        : steps.welcome.id
+      : steps.socialLogin.id
   );
 
   useEffect(() => {

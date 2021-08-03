@@ -1,30 +1,25 @@
 import jwtDecode from "jwt-decode";
 import axios, { AxiosRequestConfig } from "axios";
 import url from "url";
-import keytar from "keytar";
-import os from "os";
 
-import { resetDb } from "../store/db";
+import db from "../store/db";
 import logger from "../logger";
 
 import envVariables from "../../env-variables.json";
 
-const { auth0Domain, clientId } = envVariables;
+const { clientId, clientSecret, kakaoApiKey } = envVariables;
 
 const redirectUri = "http://localhost/callback";
 
-const keytarService = "electron-openid-oauth";
-const keytarAccount = os.userInfo().username;
-
 let accessToken: string | null = null;
 let profile: {
-  given_name: string;
-  family_name: string;
-  nickname: string;
-  name: string;
-  email: string;
+  given_name?: string;
+  family_name?: string;
+  nickname?: string;
+  name?: string;
+  email?: string;
+  picture?: string;
 } | null = null;
-let refreshToken: string | null = null;
 
 function getAccessToken() {
   return accessToken;
@@ -34,88 +29,69 @@ function getProfile() {
   return profile;
 }
 
-function getAuthenticationURL() {
-  return `https://${auth0Domain}/authorize?scope=openid profile email email_verified offline_access&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+function getAuthenticationGoogleURL() {
+  return `https://accounts.google.com/o/oauth2/v2/auth?scope=profile email&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
 }
 
-async function logout() {
-  await keytar.deletePassword(keytarService, keytarAccount);
-  await resetDb();
-
-  accessToken = null;
-  profile = null;
-  refreshToken = null;
+function getAuthenticationKakaoURL() {
+  return `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoApiKey}&redirect_uri=${redirectUri}&prompt=login`;
 }
 
-function getLogOutUrl() {
-  return `https://${auth0Domain}/v2/logout?federated`;
-}
-
-async function refreshTokens() {
-  const newRefreshToken = await keytar.getPassword(
-    keytarService,
-    keytarAccount
-  );
-
-  if (newRefreshToken) {
-    const refreshOptions: AxiosRequestConfig = {
-      method: "POST",
-      url: `https://${auth0Domain}/oauth/token`,
-      headers: { "content-type": "application/json" },
-      data: {
-        grant_type: "refresh_token",
-        client_id: clientId,
-        refresh_token: newRefreshToken,
-      },
-    };
-
-    try {
-      const response = await axios(refreshOptions);
-
-      accessToken = response.data.access_token;
-      profile = jwtDecode(response.data.id_token);
-    } catch (error) {
-      logger("refresh-token", error?.message, "error");
-      await logout();
-
-      throw error;
-    }
-  } else {
-    throw new Error("No available refresh token.");
-  }
-}
-
-async function loadTokens(callbackURL: string) {
+async function loadTokens(callbackURL: string, provider: "google" | "kakao") {
   const urlParts = url.parse(callbackURL, true);
   const { query } = urlParts;
 
-  const exchangeOptions = {
+  const exchangeOptions: any = {
     grant_type: "authorization_code",
-    client_id: clientId,
+    client_id: provider === "google" ? clientId : kakaoApiKey,
     code: query.code,
     redirect_uri: redirectUri,
   };
 
-  const options: AxiosRequestConfig = {
+  const googleOptions: AxiosRequestConfig = {
     method: "POST",
-    url: `https://${auth0Domain}/oauth/token`,
+    url: `https://oauth2.googleapis.com/token?code=${exchangeOptions.code}&client_id=${exchangeOptions.client_id}&redirect_uri=${exchangeOptions.redirect_uri}&grant_type=authorization_code&client_secret=${clientSecret}`,
     headers: {
-      "content-type": "application/json",
+      "content-type": "application/x-www-form-urlencoded",
     },
-    data: JSON.stringify(exchangeOptions),
+  };
+
+  const kakaoOptions: AxiosRequestConfig = {
+    method: "POST",
+    url: `https://kauth.kakao.com/oauth/token?code=${exchangeOptions.code}&client_id=${exchangeOptions.client_id}&redirect_uri=${exchangeOptions.redirect_uri}&grant_type=authorization_code`,
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
   };
 
   try {
-    const response = await axios(options);
+    const response = await axios(
+      provider === "google" ? googleOptions : kakaoOptions
+    );
     accessToken = response.data.access_token;
-    profile = jwtDecode(response.data.id_token);
-    refreshToken = response.data.refresh_token;
 
-    if (refreshToken) {
-      await keytar.setPassword(keytarService, keytarAccount, refreshToken);
+    if (response?.data?.id_token) {
+      profile = jwtDecode(response.data.id_token);
+
+      const user = await db.get("userDetails");
+      db.put({ ...user, ...profile });
+    } else {
+      const { data } = await axios.get("https://kapi.kakao.com/v2/user/me", {
+        headers: {
+          Authorization: `Bearer ${response.data.access_token}`,
+        },
+      });
+
+      profile = {
+        given_name: data?.properties?.nickname,
+        email: data?.kakao_account?.email,
+        picture: data?.properties?.thumbnail_image,
+      };
+
+      const user = await db.get("userDetails");
+      db.put({ ...user, ...profile });
     }
   } catch (error) {
-    await logout();
     logger("load-token-error", error?.message, "error");
     throw error;
   }
@@ -123,10 +99,8 @@ async function loadTokens(callbackURL: string) {
 
 export {
   getAccessToken,
-  getAuthenticationURL,
-  getLogOutUrl,
+  getAuthenticationGoogleURL,
+  getAuthenticationKakaoURL,
   getProfile,
   loadTokens,
-  logout,
-  refreshTokens,
 };

@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.invoke("generate-signature", values),
   openTransferWindow: (values: any) =>
     ipcRenderer.invoke("open-transfer-window", values),
+  openAuthWindow: (provider: "google" | "kakao") =>
+    ipcRenderer.invoke("open-auth-window", provider),
   listenToTransferData: (fn: any) => {
     ipcRenderer.on("send-transfer-data", (e, ...args) => fn(...args));
   },

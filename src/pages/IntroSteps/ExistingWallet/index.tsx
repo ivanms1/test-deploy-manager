@@ -6,8 +6,8 @@ import Button from "../../../components/Button";
 import Dropzone from "../../../components/Dropzone";
 import Input from "../../../components/Form/Input";
 
-import useCurrentUser from "../../../hooks/useCurrentUser";
 import useLogin from "../../../hooks/useLogin";
+import useDbUser from "../../../hooks/useDbUser";
 import { useAppContext } from "../../../components/AppContext";
 
 import instance from "../../../axios/instance";
@@ -25,13 +25,15 @@ function ExistingWallet() {
 
   const { onLogin } = useAppContext();
 
-  const { currentUser } = useCurrentUser();
+  const { user } = useDbUser();
   const { login, loading } = useLogin();
+
+  console.log(`user`, user);
 
   const { mutateAsync: importFile, isLoading } = useMutation(async () => {
     const { data } = await instance.post("/users/importWallet", {
-      name: currentUser?.name,
-      email: currentUser?.email,
+      name: user?.name || user?.given_name,
+      email: user?.email,
       orgName: ORG_NAME,
       password,
       walletType: WALLET_TYPE,
@@ -47,7 +49,7 @@ function ExistingWallet() {
 
       if (data?.success) {
         setIndentity(idFile);
-        const loginData = await login({ password, email: currentUser.email });
+        const loginData = await login({ password, email: user.email });
 
         onLogin(loginData?.payload?.["x-auth-token"]);
       }
@@ -79,18 +81,16 @@ function ExistingWallet() {
     <>
       <div className={styles.UserBox}>
         <img
-          src={currentUser?.picture}
+          src={user?.picture}
           className={styles.ProfilePicture}
           alt="profile-picture"
         />
         <div className={styles.InfoBox}>
-          <span className={styles.Name}>{currentUser?.name}</span>
-          <span className={styles.Email}>{currentUser?.email}</span>
+          <span className={styles.Name}>{user?.name}</span>
+          <span className={styles.Email}>{user?.email}</span>
         </div>
       </div>
-      <div className={styles.Title}>
-        Welcome back, {currentUser?.givenName}!
-      </div>
+      <div className={styles.Title}>Welcome back, {user?.givenName}!</div>
       <div className={styles.Subtitle}>
         Please drag and drop your JSON CONUN wallet file and enter your password
         to login to CONUN Manager.

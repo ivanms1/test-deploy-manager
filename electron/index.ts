@@ -3,16 +3,14 @@ import { app, BrowserWindow, ipcMain, shell } from "electron";
 import isDev from "electron-is-dev";
 
 import {
-  getAuthenticationURL,
-  getLogOutUrl,
+  getAuthenticationGoogleURL,
+  getAuthenticationKakaoURL,
   loadTokens,
-  logout,
-  refreshTokens,
 } from "./services/auth-service";
 
 import logger from "./logger";
 
-import { prepareDb } from "./store/db";
+import { prepareDb, resetDb } from "./store/db";
 
 import initAutoUpdate from "./updater";
 
@@ -92,14 +90,14 @@ const createWindow = async (): Promise<void> => {
   }
 };
 
-function createAuthWindow() {
+function createAuthWindow(provider: "google" | "kakao") {
   if (mainWindow) {
     mainWindow.close();
   }
 
   authWindow = new BrowserWindow({
     width: 414,
-    height: 736,
+    height: APP_HEIGHT,
     webPreferences: {
       nodeIntegration: false,
       enableRemoteModule: false,
@@ -109,7 +107,12 @@ function createAuthWindow() {
   authWindow.removeMenu();
   authWindow.setResizable(false);
 
-  authWindow.loadURL(getAuthenticationURL(), { userAgent: "Chrome" });
+  const url =
+    provider === "google"
+      ? getAuthenticationGoogleURL()
+      : getAuthenticationKakaoURL();
+
+  authWindow.loadURL(url, { userAgent: "Chrome" });
 
   const {
     session: { webRequest },
@@ -120,18 +123,16 @@ function createAuthWindow() {
   };
 
   webRequest.onBeforeRequest(filter, async ({ url }) => {
-    await loadTokens(url);
+    await loadTokens(url, provider);
     return showWindow();
   });
 }
 
 showWindow = async () => {
   try {
-    await refreshTokens();
     return createWindow();
   } catch (err) {
     logger("show-window", err?.message, "error");
-    return createAuthWindow();
   }
 };
 
@@ -150,22 +151,16 @@ app.on("activate", () => {
 });
 
 ipcMain.handle("logout", async () => {
-  const logoutWindow = new BrowserWindow({
-    show: false,
-  });
-
-  logoutWindow.loadURL(getLogOutUrl());
-
-  logoutWindow.on("ready-to-show", async () => {
-    logoutWindow.close();
-    await logout();
-  });
-
+  await resetDb();
   if (mainWindow) {
     mainWindow.close();
     mainWindow = null;
     showWindow();
   }
+});
+
+ipcMain.handle("open-auth-window", (_, provider) => {
+  createAuthWindow(provider);
 });
 
 ipcMain.handle("open-transfer-window", async (_, args) => {

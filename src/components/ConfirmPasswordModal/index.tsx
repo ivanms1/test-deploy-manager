@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import Button from "../Button";
@@ -12,11 +12,17 @@ import styles from "./ConfirmPasswordModal.module.scss";
 
 function ConfirmPasswordModal({ isOpen, onClose, onSuccess }) {
   const { user } = useDbUser();
+
   const {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm();
+
+  useEffect(() => {
+    reset();
+  }, [isOpen]);
 
   const onSubmit = () => {
     onSuccess();

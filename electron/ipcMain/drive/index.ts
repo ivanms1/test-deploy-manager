@@ -1,5 +1,5 @@
 import { app, ipcMain, shell } from "electron";
-import { server as webSocketServer } from "websocket";
+import { IUtf8Message, server as webSocketServer } from "websocket";
 import http from "http";
 
 import db from "../../store/db";
@@ -45,7 +45,7 @@ export function startWebSocket() {
       })
     );
 
-    connection.on("message", async (message) => {
+    connection.on("message", async (message: IUtf8Message) => {
       const messageData = JSON.parse(message?.utf8Data);
 
       if (messageData?.type === "get-drive-path") {

@@ -113,7 +113,6 @@ function AppProvider({ children }: AppProviderProps) {
 
   const handleTransactionsBar = (state: boolean) =>
     setIsTransactionsOpen(state);
-  console.log(`loggedUser`, loggedUser);
 
   const value = useMemo(
     () => ({

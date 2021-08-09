@@ -24,11 +24,8 @@ function ExistingWallet() {
   const [password, setPassword] = useState("");
 
   const { onLogin } = useAppContext();
-
   const { user } = useDbUser();
   const { login, loading } = useLogin();
-
-  console.log(`user`, user);
 
   const { mutateAsync: importFile, isLoading } = useMutation(async () => {
     const { data } = await instance.post("/users/importWallet", {
